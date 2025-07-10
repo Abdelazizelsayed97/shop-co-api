@@ -1,17 +1,23 @@
 import mongoose from 'mongoose';
 
-mongoose.model(
+
+
+const CategoryModel = mongoose.model(
     'Category',
     new mongoose.Schema({
         name: {
             type: String,
             required: true,
-            unique: true,
-            trim: true,
+
+
             minlength: 2,
             maxlength: 50,
         },
-    })
+        slug: {
+            type: String,
+            lowercase: true,
+        },
+    }, { timestamps: true })
 );
 
-export default mongoose.model('Category');
+export default CategoryModel;       

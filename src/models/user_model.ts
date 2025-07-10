@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { token } from 'morgan';
 
-mongoose.model(
+const UserModel = mongoose.model(
     'User', new mongoose.Schema({
         firstName: {
             type: String,
@@ -70,4 +70,4 @@ mongoose.model(
         },
     })
 );
-export default mongoose.model('User');
+export default UserModel;

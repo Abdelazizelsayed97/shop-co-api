@@ -38,7 +38,7 @@ export const updateUser = async (id: string, userData: any) => {
     try {
         return await UserModel.findByIdAndUpdate(id, userData, { new: true });
     } catch (error) {
-        throw new Error(`Error updating user with ID ${id}: ${error.message}`);
+        throw new Error(`Error updating user with ID ${id}`);
     }
 };
 
@@ -46,13 +46,13 @@ export const deleteUser = async (id: string) => {
     try {
         return await UserModel.findByIdAndDelete(id);
     } catch (error) {
-        throw new Error(`Error deleting user with ID ${id}: ${error.message}`);
+        throw new Error(`Error deleting user with ID ${id}`);
     }
 };
 export const getUserByEmail = async (email: string) => {
     try {
         return await UserModel.findOne({ email });
     } catch (error) {
-        throw new Error(`Error finding user with email ${email}: ${error.message}`);
+        throw new Error(`Error finding user with email ${email}`);
     }
 };
