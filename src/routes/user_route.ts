@@ -1,13 +1,24 @@
+// src/routes/user.routes.ts
 import express from 'express';
-import mongoose from 'mongoose';
+import {
+	getAllUsers,
+	createUser,
+	updateUser,
+	deleteUser,
+	getUserById
+} from '../services/user_service';
+import { protect } from '../middlewares/auth.middleware';
 
+const router = express.Router();
 
-import { getAllUsers, createUser, updateUser, deleteUser } from '../services/user_service';
+// 🔒 Apply auth middleware to protect all user routes
 
-export const router = express.Router();
-router.get('/', getAllUsers)
-	.post('/', createUser)
-	.put('/:id', updateUser)
-	.delete('/:id', deleteUser);
+// router.use(protect);
+
+router.get('/', getAllUsers);
+router.get('/:id', getUserById);
+router.post('/', createUser);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
 
 export default router;

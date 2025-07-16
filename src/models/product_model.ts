@@ -6,7 +6,6 @@ const ProductModel = mongoose.model(
         name: {
             type: String,
             required: true,
-            unique: true,
             trim: true,
             minlength: 2,
             maxlength: 100,
@@ -24,9 +23,10 @@ const ProductModel = mongoose.model(
             min: 0,
         },
         category: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.ObjectId,
             ref: "Category",
             required: true,
+
         },
         stock: {
             type: Number,
