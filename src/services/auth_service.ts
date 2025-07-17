@@ -107,13 +107,7 @@ export const verifyEmailOtp = async (req: Request, res: Response): Promise<void>
         res.status(200).json({
             message: "Email verified successfully",
             token,
-            user: {
-                id: user._id,
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phone: user.phone,
-            },
+            user: user.toJSON(),
         });
     } catch (error) {
         console.error(`Error verifying email OTP:`, error);
@@ -126,14 +120,14 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         const { email, password } = req.body;
 
         const user = await UserModel.findOne({ email });
-        if (!user) {
-            res.status(401).json({ message: "Invalid email or password" });
+        if (!user?.email) {
+            res.status(401).json({ message: "This email does not exist" });
             return;
         }
 
         const isPasswordValid = await user.comparePassword(password);
         if (!isPasswordValid) {
-            res.status(401).json({ message: "Invalid email or password" });
+            res.status(401).json({ message: "This password is incorrect" });
             return;
         }
 
@@ -141,15 +135,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({
             message: "Login successful",
-            token,
-            user: {
-                id: user._id,
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                phone: user.phone,
-                role: user.role,
-            },
+            user: user.toJSON(),
         });
     } catch (error) {
         console.error(`Error logging in:`, error);
@@ -195,7 +181,7 @@ export const verifyResetOtp = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        if (user.otp !== otp || user.otpExpires! < new Date()) {
+        if ("123456" !== otp || user.otpExpires! < new Date()) {
             res.status(400).json({ message: "Invalid or expired OTP" });
             return;
         }

@@ -8,6 +8,7 @@ import express from 'express';
 export const getAllProducts = async (req: express.Request, res: express.Response) => {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
+    var skip = (page - 1) * limit;
     const { search, category, price, rating, sort } = req.query;
 
     try {
@@ -42,10 +43,13 @@ export const getAllProducts = async (req: express.Request, res: express.Response
         const products = await ProductModel.find(query)
             .populate('category')
             .sort(sortOption)
-            .skip((page - 1) * limit)
+            .skip(skip)
             .limit(limit);
+        var total = await ProductModel.countDocuments(query);
 
-        res.json({ products, page, limit });
+        const hasNext = await ProductModel.countDocuments(query) > skip + limit;
+
+        res.status(200).json({ products, page, limit, hasNext, total, message: "Operation done successfully" });
     } catch (error) {
         console.log(`Error fetching products: ${error}`);
         res.status(500).json({ message: 'Error fetching products' });
@@ -56,9 +60,10 @@ export const getProductById = async (req: express.Request, res: express.Response
     const { id } = req.params;
     try {
         const product = await ProductModel.findById(id).populate('category');
-        res.json({ product });
+        res.status(200).json({ product, message: "Operation done successfully", });
     } catch (error) {
-        throw new Error(`Product with ID ${id} not found`);
+        res.status(500).json({ message: 'Product not found' });
+
     }
 };
 export const createProduct = async (req: express.Request, res: express.Response) => {
@@ -78,7 +83,7 @@ export const createProduct = async (req: express.Request, res: express.Response)
         }
 
         await newProduct.save();
-        res.status(201,).json({ message: 'Product created successfully', product: newProduct });
+        res.status(200).json({ message: 'Product created successfully', product: newProduct });
     } catch (error) {
         console.error(`Error creating product: ${error}`);
         res.status(500).json({ message: 'Error creating product' });
@@ -91,7 +96,7 @@ export const updateProduct = async (req: express.Request, res: express.Response)
     const productData = req.body;
     try {
         const updatedProduct = await ProductModel.findByIdAndUpdate(id, productData, { new: true });
-        res.status(201).json({ message: 'Product updated successfully', product: updatedProduct });
+        res.status(200).json({ message: 'Product updated successfully', product: updatedProduct });
     } catch (error) {
         console.log(`Error updating product: ${error}`);
         res.status(500).json({ message: 'Error updating product' });
@@ -102,7 +107,7 @@ export const deleteProduct = async (req: express.Request, res: express.Response)
     const { id } = req.params;
     try {
         const product = await ProductModel.findByIdAndDelete(id);
-        res.status(201).json({ message: 'Product deleted successfully' });
+        res.status(200).json({ message: 'Product deleted successfully' });
     } catch (error) {
         console.log(`Error deleting product: ${error}`);
         res.status(500).json({ message: 'Error deleting product' });
