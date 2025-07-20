@@ -14,26 +14,28 @@ const generateToken = (userId: string): string => {
 };
 
 const sendOtpEmail = async (email: string, otp: string, subject: string) => {
+    process.env.EMAIL_USER = email || '';
+    process.env.EMAIL_PASS = process.env.EMAIL_PASS || '';
     // In a real application, you would configure and use a nodemailer transporter here
     // For now, we'll just log the OTP to the console
     console.log(`Sending OTP to ${email}: ${otp} for ${subject}`);
     // Example nodemailer setup (requires configuration in config.env)
-    // const transporter = nodemailer.createTransport({
-    //     service: 'gmail',
-    //     auth: {
-    //         user: process.env.EMAIL_USER,
-    //         pass: process.env.EMAIL_PASS,
-    //     },
-    // });
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
 
-    // const mailOptions = {
-    //     from: process.env.EMAIL_USER,
-    //     to: email,
-    //     subject: subject,
-    //     html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
-    // };
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: subject,
+        html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+    };
 
-    // await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
 };
 // sign up a new user for app 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {

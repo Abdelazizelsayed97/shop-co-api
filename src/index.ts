@@ -7,6 +7,8 @@ import productRoutes from './routes/product_route';
 import orderRoutes from './routes/order_route';
 import cartRoutes from './routes/cart_route';
 import authRoute from './routes/auth_route';
+import cors from 'cors';
+
 
 
 
@@ -15,10 +17,14 @@ import authRoute from './routes/auth_route';
 dotenv.config({ path: './config.env' });
 
 import './config/db_connection';
-import { error } from 'console';
+
 const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(cors({
+    origin: '*', // or restrict to specific domain
+    credentials: true,
+}));
 app.use('/sample_mflix/users', userRoutes);
 app.use('/sample_mflix/products', productRoutes);
 app.use('/sample_mflix/categories', categoryRoutes);
