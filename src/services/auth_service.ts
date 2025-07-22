@@ -20,22 +20,22 @@ const sendOtpEmail = async (email: string, otp: string, subject: string) => {
     // For now, we'll just log the OTP to the console
     console.log(`Sending OTP to ${email}: ${otp} for ${subject}`);
     // Example nodemailer setup (requires configuration in config.env)
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
+    // const transporter = nodemailer.createTransport({
+    //     service: 'gmail',
+    //     auth: {
+    //         user: process.env.EMAIL_USER,
+    //         pass: process.env.EMAIL_PASS,
+    //     },
+    // });
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: subject,
-        html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
-    };
+    // const mailOptions = {
+    //     from: process.env.EMAIL_USER,
+    //     to: email,
+    //     subject: subject,
+    //     html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+    // };
 
-    await transporter.sendMail(mailOptions);
+    // await transporter.sendMail(mailOptions);
 };
 // sign up a new user for app 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
@@ -134,6 +134,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         }
 
         const token = generateToken(user._id.toString());
+        user.token = token;
+
+        await user.save();
 
         res.status(200).json({
             message: "Login successful",

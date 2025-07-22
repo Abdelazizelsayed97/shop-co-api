@@ -3,19 +3,14 @@ import { getCart, addToCart, updateCartItemQuantity, removeFromCart, clearCart }
 
 const router = express.Router();
 
-// Get user's cart
 router.get('/:userId', getCart);
 
-// Add item to cart
 router.post('/:userId/items', addToCart);
 
-// Update cart item quantity
-router.put('/:userId/items', updateCartItemQuantity);
+router.put('/:userId/items/:productId', updateCartItemQuantity);
 
-// Remove item from cart
-router.delete('/:userId/items', removeFromCart);
+router.delete('/:userId/items/:productId', removeFromCart);
 
-// Clear user's cart
 router.delete('/:userId', clearCart);
 
 export default router;

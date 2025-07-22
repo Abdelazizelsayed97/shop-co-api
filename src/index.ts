@@ -22,14 +22,14 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors({
-    origin: '*', // or restrict to specific domain
+    origin: '*',
     credentials: true,
 }));
-app.use('/sample_mflix/users', userRoutes);
-app.use('/sample_mflix/products', productRoutes);
-app.use('/sample_mflix/categories', categoryRoutes);
-app.use('/sample_mflix/orders', orderRoutes);
-app.use('/sample_mflix/cart', cartRoutes);
+app.use('/users', userRoutes);
+app.use('/products', productRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/orders', orderRoutes);
+app.use('/cart', cartRoutes);
 app.use('/auth', authRoute);
 
 //route error handler

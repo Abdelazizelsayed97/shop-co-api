@@ -1,4 +1,5 @@
 import mongoose, { Document, Model } from 'mongoose';
+import ProductModel from './product_model';
 
 export interface IUser extends Document {
     _id: string;
@@ -21,6 +22,7 @@ export interface IUser extends Document {
     otp?: string;
     otpExpires?: Date;
     resetPasswordAllowed?: boolean;
+    cartItems?: Array<typeof ProductModel>;
     comparePassword(password: string): Promise<boolean>;
 }
 
@@ -113,6 +115,21 @@ const userSchema = new mongoose.Schema<IUser>({
     otpExpires: {
         type: Date,
     },
+    cartItems: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+                min: 1,
+            },
+        },
+
+    ],
     resetPasswordAllowed: { type: Boolean, default: false },
 
     resetPasswordToken: String,
