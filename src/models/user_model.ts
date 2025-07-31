@@ -112,16 +112,14 @@ const userSchema = new mongoose.Schema<IUser>({
     otpExpires: {
         type: Date,
     },
-    cartItems: {
+    cartItems: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart',
-
-    },
-    orders: {
+    }],
+    orders: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
-        default: [],
-    },
+    }],
     resetPasswordAllowed: { type: Boolean, default: false },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
