@@ -1,6 +1,7 @@
 
 import express from 'express';
-import { loginUser, registerUser, verifyEmailOtp, forgotPassword, verifyResetOtp, resetPassword } from '../services/auth_service';
+import { loginUser, registerUser, verifyEmailOtp, forgotPassword, verifyResetOtp, resetPassword, logoutUser } from '../services/auth_service';
+import { protect as authMiddleware } from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
@@ -21,5 +22,7 @@ router.post('/verify-reset-otp', verifyResetOtp);
 
 
 router.post('/reset-password', resetPassword);
+
+router.post('/logout', authMiddleware, logoutUser);
 
 export default router;

@@ -30,12 +30,12 @@ const CartSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
-        unique: true, // Each user has only one cart
+        unique: true,
     },
     items: [CartItemSchema],
 }, { timestamps: true });
 
-const CartModel = mongoose.model<ICart>('Cart', CartSchema);
+const CartModel: mongoose.Model<ICart> = mongoose.model<ICart>('Cart', CartSchema);
 
 
 export default CartModel;

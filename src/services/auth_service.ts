@@ -102,13 +102,13 @@ export const verifyEmailOtp = async (req: Request, res: Response): Promise<void>
         user.isVerified = true;
         user.otp = undefined;
         user.otpExpires = undefined;
-        await user.save();
+
 
         const token = generateToken(user._id.toString());
-
+        user.token = token;
+        await user.save();
         res.status(200).json({
             message: "Email verified successfully",
-            token,
             user: user.toJSON(),
         });
     } catch (error) {
@@ -116,6 +116,7 @@ export const verifyEmailOtp = async (req: Request, res: Response): Promise<void>
         res.status(500).json({ message: "Server error during email verification" });
     }
 };
+
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -176,13 +177,19 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
 };
 
 export const verifyResetOtp = async (req: Request, res: Response): Promise<void> => {
+
     try {
         const { email, otp } = req.body;
 
         const user = await UserModel.findOne({ email });
 
+
         if (!user) {
             res.status(404).json({ message: "User not found" });
+            return;
+        }
+        if (user.otpExpires === undefined) {
+            res.status(403).json({ message: "Password reset not allowed. Please verify OTP first." });
             return;
         }
 
@@ -201,6 +208,25 @@ export const verifyResetOtp = async (req: Request, res: Response): Promise<void>
     } catch (error) {
         console.error(`Error verifying reset OTP:`, error);
         res.status(500).json({ message: "Server error during OTP verification" });
+    }
+};
+
+export const logoutUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user = (req as any).user; // Assuming user is attached to req by authMiddleware
+        if (req.headers.authorization)
+            if (!user) {
+                res.status(401).json({ message: "Not authenticated." });
+                return;
+            }
+
+        user.token = undefined; // Clear the token
+        await user.save();
+
+        res.status(200).json({ message: "Logged out successfully." });
+    } catch (error) {
+        console.error(`Error logging out:`, error);
+        res.status(500).json({ message: "Server error during logout." });
     }
 };
 

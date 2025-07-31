@@ -1,5 +1,6 @@
 import OrderModel from '../models/order_model';
 import express from 'express';
+import AddressModel from '../models/adress_model';
 
 // CRUD operations for orders
 
@@ -33,7 +34,19 @@ export const getOrderById = async (req: express.Request, res: express.Response) 
 
 export const createOrder = async (req: express.Request, res: express.Response) => {
     try {
-        const newOrder = new OrderModel(req.body);
+        const { userId, addressId, products } = req.body;
+
+        const address = await AddressModel.findOne({ _id: addressId, user: userId });
+        if (!address) {
+            return res.status(404).json({ message: 'Address not found or does not belong to the user' });
+        }
+
+        const newOrder = new OrderModel({
+            user: userId,
+            products: products,
+            shippingAddress: addressId,
+        });
+
         await newOrder.save();
         res.status(201).json({ message: 'Order created successfully', order: newOrder });
     } catch (error) {

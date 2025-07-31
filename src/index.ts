@@ -7,6 +7,7 @@ import productRoutes from './routes/product_route';
 import orderRoutes from './routes/order_route';
 import cartRoutes from './routes/cart_route';
 import authRoute from './routes/auth_route';
+import addressRoute from './routes/adress_route';
 import cors from 'cors';
 
 
@@ -31,6 +32,7 @@ app.use('/categories', categoryRoutes);
 app.use('/orders', orderRoutes);
 app.use('/cart', cartRoutes);
 app.use('/auth', authRoute);
+app.use('/address', addressRoute);
 
 //route error handler
 // app.all('*', (req: express.Request, res: express.Response, next: express.NextFunction) => {

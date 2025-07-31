@@ -1,14 +1,21 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
+
+export interface IOrder extends Document {
+    street: string;
+    city: string;
+    state: string;
+    zipCode: string;
+}
 
 const orderSchema = new mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     products: [{
         product: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'Product',
             required: true
         },
@@ -29,14 +36,14 @@ const orderSchema = new mongoose.Schema({
         default: 'pending'
     },
     shippingAddress: {
-        type: String,
-        required: true,
-        trim: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address',
+        required: true
     }
 }, {
     timestamps: true
 });
 
-const OrderModel = mongoose.model('Order', orderSchema);
+const OrderModel: mongoose.Model<IOrder> = mongoose.model<IOrder>('Order', orderSchema);
 
 export default OrderModel;

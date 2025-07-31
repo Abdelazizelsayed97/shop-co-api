@@ -1,5 +1,8 @@
 import mongoose, { Document, Model } from 'mongoose';
 import ProductModel from './product_model';
+import { IAddress } from './adress_model';
+import { IOrder } from './order_model';
+import { ICart } from './cart_model';
 
 export interface IUser extends Document {
     _id: string;
@@ -8,8 +11,7 @@ export interface IUser extends Document {
     email: string;
     password: string;
     phone: string;
-    address: string;
-    city: string;
+    addresses: IAddress['_id'][];
     role: 'USER' | 'ADMIN';
     image: string;
     isVerified: boolean;
@@ -22,7 +24,8 @@ export interface IUser extends Document {
     otp?: string;
     otpExpires?: Date;
     resetPasswordAllowed?: boolean;
-    cartItems?: Array<typeof ProductModel>;
+    cartItems: ICart['_id'];
+    orders: IOrder['_id'][];
     comparePassword(password: string): Promise<boolean>;
 }
 
@@ -67,18 +70,12 @@ const userSchema = new mongoose.Schema<IUser>({
             'Invalid phone number',
         ],
     },
-    address: {
-        type: String,
-        trim: true,
-        maxlength: 100,
-        default: '',
-    },
-    city: {
-        type: String,
-        trim: true,
-        maxlength: 50,
-        default: '',
-    },
+    addresses: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Address',
+        },
+    ],
     role: {
         type: String,
         enum: ['USER', 'ADMIN'],
@@ -115,23 +112,17 @@ const userSchema = new mongoose.Schema<IUser>({
     otpExpires: {
         type: Date,
     },
-    cartItems: [
-        {
-            product: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Product',
-                required: true,
-            },
-            quantity: {
-                type: Number,
-                required: true,
-                min: 1,
-            },
-        },
+    cartItems: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart',
 
-    ],
+    },
+    orders: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        default: [],
+    },
     resetPasswordAllowed: { type: Boolean, default: false },
-
     resetPasswordToken: String,
     resetPasswordExpires: Date,
 }, { timestamps: true });

@@ -7,7 +7,7 @@ import {
 	deleteUser,
 	getUserById
 } from '../services/user_service';
-import { protect } from '../middlewares/auth.middleware';
+
 
 const router = express.Router();
 
