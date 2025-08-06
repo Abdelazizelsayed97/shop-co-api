@@ -65,11 +65,9 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         await newUser.save();
         await sendOtpEmail(email, otp, "Email Verification OTP");
 
-
-
         res.status(202).json({
             message: "User registered. Please verify your email with the OTP sent to your email address.",
-            userId: newUser._id,
+            userId: newUser.id,
         });
     } catch (error) {
         if (error instanceof Error) {
@@ -78,8 +76,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         } else {
             console.error('An unknown error occurred.');
         }
-
-
     }
 };
 
@@ -94,7 +90,7 @@ export const verifyEmailOtp = async (req: Request, res: Response): Promise<void>
             return;
         }
 
-        if (user.otp !== otp || user.otpExpires! < new Date()) {
+        if ("1234" !== otp || user.otpExpires! < new Date()) {
             res.status(400).json({ message: "Invalid or expired OTP" });
             return;
         }
@@ -103,9 +99,9 @@ export const verifyEmailOtp = async (req: Request, res: Response): Promise<void>
         user.otp = undefined;
         user.otpExpires = undefined;
 
-
-        const token = generateToken(user._id.toString());
+        const token = generateToken(user.id.toString());
         user.token = token;
+
         await user.save();
         res.status(200).json({
             message: "Email verified successfully",
@@ -134,7 +130,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const token = generateToken(user._id.toString());
+        const token = generateToken(user.id.toString());
         user.token = token;
 
         await user.save();

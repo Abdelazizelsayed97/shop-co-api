@@ -5,7 +5,7 @@ import { IOrder } from './order_model';
 import { ICart } from './cart_model';
 
 export interface IUser extends Document {
-    _id: string;
+    id: mongoose.Types.ObjectId;
     firstName: string;
     lastName: string;
     email: string;

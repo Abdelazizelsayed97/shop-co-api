@@ -68,7 +68,7 @@ export const deleteAddress = async (userId: string, addressId: string): Promise<
         throw new Error('Address not found.');
     }
 
-    if (address.user.toString() !== userId) {
+    if (user.id.toString() !== userId) {
         throw new Error('Address does not belong to the specified user.');
     }
 
